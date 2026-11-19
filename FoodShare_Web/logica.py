@@ -6,7 +6,7 @@ las reglas del negocio. app.py (Flask) las usa para mostrar pantallas.
 
 Conceptos de POO que se aplican aquí:
 - Abstracción: Usuario es una clase abstracta (no se puede instanciar).
-- Herencia: Restaurante, Fundacion y Administrador heredan de Usuario.
+- Herencia: Comercializadora, Fundacion y Administrador heredan de Usuario.
 - Polimorfismo: cada subclase responde distinto a `rol`, `etiqueta_rol`
   y `pantalla_inicio`.
 - Encapsulamiento: la contraseña se guarda en un atributo "privado"
@@ -86,7 +86,7 @@ class Usuario(ABC):
     @property
     @abstractmethod
     def rol(self):
-        """Identificador interno del rol: 'restaurante', 'fundacion' o 'admin'."""
+        """Identificador interno del rol: 'Comercializadora', 'fundacion' o 'admin'."""
 
     @property
     @abstractmethod
@@ -101,7 +101,7 @@ class Usuario(ABC):
         return "{}({}, {})".format(type(self).__name__, self.id_usuario, self.nombre)
 
 
-class Restaurante(Usuario):
+class Comercializadora(Usuario):
     """Donante: publica excedentes de comida."""
 
     def __init__(self, id_usuario, nombre, correo, contrasena, ubicacion, razon_social):
@@ -110,14 +110,14 @@ class Restaurante(Usuario):
 
     @property
     def rol(self):
-        return "restaurante"
+        return "Comercializadora"
 
     @property
     def etiqueta_rol(self):
-        return "Restaurante"
+        return "Comercializadora"
 
     def pantalla_inicio(self):
-        return "restaurante_panel"
+        return "Comercializadora_panel"
 
 
 class Fundacion(Usuario):
@@ -182,7 +182,7 @@ class Alimento:
 
 
 class Donacion:
-    """Conjunto de alimentos que un restaurante ofrece a las fundaciones."""
+    """Conjunto de alimentos que una Comercializadora ofrece a las fundaciones."""
 
     def __init__(self, id_donacion, alimentos, donante, fecha_creacion,
                  estado=Estado.PENDIENTE, reservado_por=None, descripcion=None):
@@ -284,8 +284,8 @@ class Sistema:
 
     @staticmethod
     def _crear_usuario_desde_dict(u):
-        if u["rol"] == "restaurante":
-            return Restaurante(u["id_usuario"], u["nombre"], u["correo"], u["contrasena"],
+        if u["rol"] == "Comercializadora":
+            return Comercializadora(u["id_usuario"], u["nombre"], u["correo"], u["contrasena"],
                                u["ubicacion"], u["razon_social"])
         if u["rol"] == "fundacion":
             return Fundacion(u["id_usuario"], u["nombre"], u["correo"], u["contrasena"],
@@ -315,13 +315,13 @@ class Sistema:
 
     def registrar_usuario(self, tipo, nombre, correo, contrasena, confirmacion,
                           ubicacion, razon_social="", capacidad_kg=""):
-        """Crea una cuenta de Restaurante o Fundación (nunca de Administrador)."""
+        """Crea una cuenta de Comercializadora o Fundación (nunca de Administrador)."""
         nombre = (nombre or "").strip()
         correo = (correo or "").strip().lower()
         ubicacion = (ubicacion or "").strip()
         razon_social = (razon_social or "").strip()
 
-        if tipo not in ("restaurante", "fundacion"):
+        if tipo not in ("Comercializadora", "fundacion"):
             raise ErrorFoodShare("Elige un tipo de cuenta válido.")
         if not nombre or not correo or not ubicacion or not contrasena:
             raise ErrorFoodShare("Completa todos los campos obligatorios.")
@@ -335,10 +335,10 @@ class Sistema:
             raise ErrorFoodShare("Las contraseñas no coinciden.")
 
         nuevo_id = "U{:02d}".format(len(self.usuarios) + 1)
-        if tipo == "restaurante":
+        if tipo == "Comercializadora":
             if not razon_social:
-                raise ErrorFoodShare("La razón social es obligatoria para restaurantes.")
-            usuario = Restaurante(nuevo_id, nombre, correo, contrasena, ubicacion, razon_social)
+                raise ErrorFoodShare("La razón social es obligatoria para las Comercializadoras.")
+            usuario = Comercializadora(nuevo_id, nombre, correo, contrasena, ubicacion, razon_social)
         else:
             try:
                 capacidad = float(capacidad_kg)
@@ -351,8 +351,8 @@ class Sistema:
         self.usuarios.append(usuario)
         return usuario
 
-    def restaurantes(self):
-        return [u for u in self.usuarios if isinstance(u, Restaurante)]
+    def Comercializadoras(self):
+        return [u for u in self.usuarios if isinstance(u, Comercializadoras)]
 
     # --- Consultas de donaciones -----------------------------------------
     def obtener_donacion(self, id_donacion):
@@ -374,8 +374,8 @@ class Sistema:
     def donaciones_por_estado(self, *estados):
         return [d for d in self.todas_las_donaciones() if d.estado in estados]
 
-    def donaciones_de_restaurante(self, restaurante):
-        return [d for d in self.todas_las_donaciones() if d.donante is restaurante]
+    def donaciones_de_Comercializadora(self, Comercializadora):
+        return [d for d in self.todas_las_donaciones() if d.donante is Comercializadora]
 
     def reservas_de_fundacion(self, fundacion):
         return [d for d in self.todas_las_donaciones() if d.reservado_por is fundacion]
@@ -407,15 +407,15 @@ class Sistema:
         return cambiadas
 
     # --- Acciones (cada una valida quién la hace) -------------------------
-    def publicar_donacion(self, restaurante, alimentos):
-        if not isinstance(restaurante, Restaurante):
-            raise ErrorFoodShare("Solo un restaurante puede publicar donaciones.")
+    def publicar_donacion(self, Comercializadora, alimentos):
+        if not isinstance(Comercializadora, Comercializadora):
+            raise ErrorFoodShare("Solo una Comercializadora puede publicar donaciones.")
         if not alimentos:
             raise ErrorFoodShare("Agrega al menos un alimento a la donación.")
         for a in alimentos:
             if a.fecha_vencimiento < self.hoy:
                 raise ErrorFoodShare("«{}» ya está caducado ({}).".format(a.nombre, a.str_vencimiento))
-        donacion = Donacion(self.siguiente_id(), alimentos, restaurante, self.hoy)
+        donacion = Donacion(self.siguiente_id(), alimentos, Comercializadora, self.hoy)
         self.donaciones.append(donacion)
         return donacion
 
@@ -475,12 +475,12 @@ class Sistema:
             "kg_disponibles": self.peso_de(disponibles),
             "reservadas": len(self.donaciones_por_estado(Estado.RESERVADA)),
             "recibidas": len(self.donaciones_por_estado(Estado.RECIBIDA)),
-            "restaurantes": len(self.restaurantes()),
+            "Comercializadoras": len(self.Comercializadoras()),
             "total": len(self.donaciones),
         }
 
-    def resumen_restaurante(self, restaurante):
-        propias = self.donaciones_de_restaurante(restaurante)
+    def resumen_Comercializadora(self, Comercializadora):
+        propias = self.donaciones_de_Comercializadora(Comercializadora)
         disponibles = [d for d in propias if d.estado == Estado.DISPONIBLE]
         reservadas = [d for d in propias if d.estado == Estado.RESERVADA]
         return {
@@ -499,3 +499,27 @@ class Sistema:
 
 # Instancia única que usa la aplicación web.
 sistema = Sistema(fecha_actual=FECHA_DEMO)
+
+
+
+       
+   
+
+
+
+    
+     
+      
+            
+           
+           
+       
+           
+           
+
+    
+       
+    
+        
+       
+       
