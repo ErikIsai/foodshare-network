@@ -1,0 +1,21 @@
+FOODSHARE NETWORK - CAMBIOS VERSION 2.2
+
+1. Comercializadora sustituye a Restaurante como perfil donante.
+2. Se conserva el registro de múltiples cuentas de Comercializadora y Fundación. Las cuentas nuevas siguen guardándose en SQLite.
+3. Se mantiene la separación de funciones por rol: Comercializadora publica, Fundación explora/reserva/recibe y Administrador valida o rechaza.
+4. Se agregó la pantalla Mi cuenta para consultar los datos y las funciones de cada perfil.
+5. Se habilitó la sección Alertas para Fundación. Muestra donaciones disponibles y avisos de reservas propias próximas a caducar.
+6. Se muestra información nutricional opcional al explorar y consultar una donación. El dato lo escribe la Comercializadora; el sistema no lo calcula.
+7. La fecha de caducidad de cada alimento publicado debe ser al menos siete días posterior al día actual.
+8. Las fechas de los datos de demostración se calculan en función de la fecha de ejecución para que no aparezcan vencidas por usar fechas antiguas.
+
+PERSISTENCIA
+- Cuentas nuevas: se guardan en FoodShare_Web/foodshare.sqlite3.
+- Donaciones, reservas y cambios de estado: permanecen en memoria y se reinician al cerrar el servidor. No se autosalvan en SQLite en esta versión.
+
+VALIDACIÓN REALIZADA EN ESTE entorno
+- 24 pruebas del modelo POO: aprobadas.
+- 17 plantillas HTML: compilación Jinja correcta.
+- app.py, logica.py, datos_demo.py y archivos de prueba: compilación de sintaxis Python correcta.
+- Las pruebas de rutas web están incluidas, pero no pudieron ejecutarse aquí porque el entorno de revisión no tiene Flask instalado ni acceso para descargarlo. Ejecutarlas en la computadora donde se instale el proyecto con:
+  python -m unittest discover -s tests -v

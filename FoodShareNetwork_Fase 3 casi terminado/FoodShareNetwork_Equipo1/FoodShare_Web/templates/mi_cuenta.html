@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Mi cuenta{% endblock %}
+
+{% block content %}
+<header class="flex flex-col gap-1.5">
+  <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Mi cuenta</h1>
+  <p class="font-body-md text-body-md text-on-surface-variant">Datos del perfil con el que ingresaste a FoodShare Network.</p>
+</header>
+
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-space-lg shadow-sm max-w-3xl">
+  <div class="flex items-center gap-space-md border-b border-outline-variant/50 pb-space-md mb-space-md">
+    <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+      <span class="material-symbols-outlined text-[26px]">person</span>
+    </div>
+    <div>
+      <h2 class="font-title-md text-title-md text-on-surface">{{ cuenta.nombre }}</h2>
+      <span class="font-label-md text-label-md text-primary">{{ cuenta.etiqueta_rol }}</span>
+    </div>
+  </div>
+  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+    <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Identificador</dt><dd class="font-body-md text-body-md text-on-surface mt-1">{{ cuenta.id_usuario }}</dd></div>
+    <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Correo</dt><dd class="font-body-md text-body-md text-on-surface mt-1">{{ cuenta.correo }}</dd></div>
+    <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Ubicación</dt><dd class="font-body-md text-body-md text-on-surface mt-1">{{ cuenta.ubicacion }}</dd></div>
+    {% if cuenta.rol == 'comercializadora' %}
+      <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Razón social</dt><dd class="font-body-md text-body-md text-on-surface mt-1">{{ cuenta.razon_social }}</dd></div>
+    {% elif cuenta.rol == 'fundacion' %}
+      <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Capacidad de recepción</dt><dd class="font-body-md text-body-md text-on-surface mt-1">{{ '%.1f' % cuenta.capacidad_kg }} kg</dd></div>
+    {% else %}
+      <div><dt class="font-label-sm text-label-sm text-on-surface-variant">Permisos</dt><dd class="font-body-md text-body-md text-on-surface mt-1">Validar y administrar donaciones</dd></div>
+    {% endif %}
+  </dl>
+  <div class="mt-space-lg pt-space-md border-t border-outline-variant/50">
+    {% if cuenta.rol == 'comercializadora' %}
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Desde esta cuenta puedes publicar excedentes de alimentos y consultar el estado de tus donaciones.</p>
+    {% elif cuenta.rol == 'fundacion' %}
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Desde esta cuenta puedes explorar donaciones, reservar alimentos, confirmar su recepción y consultar alertas.</p>
+    {% else %}
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Esta cuenta puede revisar las donaciones pendientes y aprobarlas o rechazarlas.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

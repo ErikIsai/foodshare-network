@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Alertas de Fundación{% endblock %}
+
+{% block content %}
+<header class="flex flex-col gap-1.5">
+  <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Alertas</h1>
+  <p class="font-body-md text-body-md text-on-surface-variant">Avisos sobre donaciones disponibles y reservas de tu Fundación.</p>
+</header>
+
+{% if alertas %}
+  <section class="flex flex-col gap-space-md">
+    {% for alerta in alertas %}
+      <article class="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-space-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+        <div class="flex items-start gap-space-md">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0
+                      {{ 'bg-error-container text-error' if alerta.tipo == 'urgente' else ('bg-secondary-fixed/60 text-secondary' if alerta.tipo == 'aviso' else 'bg-primary-fixed text-primary') }}">
+            <span class="material-symbols-outlined">{{ 'priority_high' if alerta.tipo == 'urgente' else ('schedule' if alerta.tipo == 'aviso' else 'notifications_active') }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h2 class="font-title-md text-title-md text-on-surface">{{ alerta.titulo }}</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">{{ alerta.mensaje }}</p>
+            <span class="font-label-sm text-label-sm text-outline">{{ alerta.donacion.id_donacion }} · Vence {{ alerta.donacion.str_vencimiento }}</span>
+          </div>
+        </div>
+        <a href="{{ url_for('donacion_detalle', id_donacion=alerta.donacion.id_donacion) }}"
+           class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg hover:opacity-90 whitespace-nowrap">Ver donación</a>
+      </article>
+    {% endfor %}
+  </section>
+{% else %}
+  <section class="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-space-xl text-center shadow-sm">
+    <span class="material-symbols-outlined text-primary text-[42px]">notifications_none</span>
+    <h2 class="font-title-md text-title-md text-on-surface mt-2">No tienes alertas por ahora</h2>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-1">Cuando haya nuevas donaciones disponibles o una reserva esté próxima a caducar, aparecerá aquí.</p>
+    <a href="{{ url_for('fundacion_explorar') }}" class="inline-flex mt-4 px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg">Explorar donaciones</a>
+  </section>
+{% endif %}
+{% endblock %}

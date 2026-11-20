@@ -1,0 +1,31 @@
+FOODSHARE NETWORK - EJECUTAR EN WINDOWS (CMD)
+
+1. Extrae todo el ZIP.
+2. Abre la carpeta FoodShareNetwork_Equipo1.
+3. Entra a la carpeta FoodShare_Web.
+4. Haz clic en la barra de dirección del Explorador, escribe cmd y presiona Enter.
+5. En la ventana negra ejecuta estos comandos, uno por uno:
+
+   py -m venv .venv
+   .venv\Scripts\activate
+   python -m pip install -r requirements.txt
+   python app.py
+
+6. Abre en Chrome o Edge: http://127.0.0.1:5000
+
+IMPORTANTE:
+- Mantén abierta la ventana de CMD mientras uses FoodShare Network.
+- Para detener la aplicación, vuelve a CMD y presiona CTRL + C.
+- La primera vez se necesita internet para instalar Flask y cargar los estilos de la interfaz.
+- Las cuentas nuevas de Comercializadora y Fundación se guardan en FoodShare_Web\foodshare.sqlite3.
+- Las donaciones y reservas nuevas se mantienen en memoria y se reinician cuando se cierra el servidor.
+- La fecha de caducidad de cada alimento nuevo debe ser al menos 7 días posterior a la fecha actual.
+- La Fundación puede consultar la sección Alertas y cada rol tiene una sección Mi cuenta.
+- La información nutricional puede capturarse al agregar un alimento y se muestra en la exploración y en el detalle.
+
+CUENTAS DEMO:
+- Comercializadora: contacto@elbuensabor.mx / claveComercializadora2024
+- Fundación: recepcion@bancoesperanza.org / claveFundacion2024
+- Administradora: admin@foodshare.org / rootAdminODS123
+
+En el formulario de registro solo se puede elegir Comercializadora o Fundación. El acceso de Administrador se mantiene restringido.
